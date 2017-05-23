@@ -29,8 +29,42 @@ class BaseHandler(webapp2.RequestHandler):
 
 class MainHandler(BaseHandler):
     def get(self):
-        return self.render_template("hello.html")
+        return self.render_template( "hello.html" )
+
+class ConvertHandler(BaseHandler):
+    def post(self):
+        currency_from = self.request.get( "currency1" )
+        currency_to = self.request.get( "currency2" )
+        convert_number = float( self.request.get( "number" ))
+
+        if currency_from == "EUR" and currency_to == "USD":
+            result = float( convert_number * 1.119716 )
+
+        elif currency_from == "EUR" and currency_to == "GBP":
+            result = float( convert_number / 1.159357 )
+
+        elif currency_from == "USD" and currency_to == "EUR":
+            result = float( convert_number / 1.120236 )
+
+        elif currency_from == "USD" and currency_to == "GBP":
+            result = float( convert_number / 1.298628 )
+
+        elif currency_from == "GBP" and currency_to == "EUR":
+            result = float( convert_number * 1.159175 )
+
+        elif currency_from == "GBP" and currency_to == "USD":
+            result = float( convert_number * 1.298510 )
+
+        else:
+            result = "Pleae choose a different currencies!"
+
+        params = { "result": result }
+
+        return self.render_template( "result.html", params=params )
+
+
 
 app = webapp2.WSGIApplication([
     webapp2.Route('/', MainHandler),
+    webapp2.Route("/result", ConvertHandler)
 ], debug=True)
